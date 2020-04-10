@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  lambda_node12x:
+    build:
+      context: .
+    container_name: lambda_node12x
+    image: lambda_node12x
+    volumes:
+      - ./src:/var/task
+      - ${HOME}/.aws/private/:/root/.aws/
+    working_dir: /var/task
+    tty: true
+    stdin_open: true

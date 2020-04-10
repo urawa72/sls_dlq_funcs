@@ -1,0 +1,22 @@
+service: dlqfunc
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-1
+  memorySize: 512
+  stage: dev
+  timeout: 10
+  # role: ${file(./config.json):IAM_ROLE_ARN}
+
+# 外部ファイルは関数に含めない
+package:
+  exclude:
+    - config.json
+
+functions:
+  dlqFunc:
+    handler: handler.dlqFunc
+    name: ${self:service}
+    events:
+      - sns: ${file(./config.json):SNS_ARN}

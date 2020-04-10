@@ -1,0 +1,26 @@
+service: failfunc
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-1
+  memorySize: 512
+  stage: dev
+  timeout: 10
+  # role: ${file(./config.json):IAM_ROLE_ARN}
+
+# 外部ファイルは関数に含めない
+package:
+  exclude:
+    - config.json
+
+functions:
+  failFunc:
+    handler: handler.failFunc
+    name: ${self:service}
+    onError: ${file(./config.json):SNS_ARN}
+    events:
+      - s3:
+          bucket: ${file(./config.json):S3_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          existing: true
